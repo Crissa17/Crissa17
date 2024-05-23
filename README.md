@@ -1,6 +1,6 @@
 # Clone the repository:
 
-git clone <repository link>
+git clone https://github.com/Crissa17/chatbot-app.git
 cd chatbot
 
 ## Install dependencies:
