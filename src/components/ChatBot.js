@@ -11,6 +11,59 @@ const ChatBot = () => {
 
   const toggleChat = () => setIsOpen(!isOpen);
 
+  const generateSearchLink = (userMessage) => {
+    const query = encodeURIComponent(userMessage);
+    return `https://www.google.com/search?q=${query}`;
+  };
+
+  const mockApiResponse = (userMessage) => {
+    const lowerCaseMessage = userMessage.toLowerCase();
+    if (lowerCaseMessage.startsWith("hello")) {
+      return {
+        text: `Hello! I'm a bot here to assist you. You can ask me about programming languages, web development, and more. For example, try asking "What is JavaScript?"`,
+        sender: "bot",
+      };
+    } else if (lowerCaseMessage.startsWith("what is javascript")) {
+      return {
+        text: `JavaScript is a programming language commonly used in web development. Learn more at https://developer.mozilla.org/en-US/docs/Web/JavaScript`,
+        sender: "bot",
+      };
+    } else if (lowerCaseMessage.startsWith("learn web development")) {
+      return {
+        text: `You can start learning web development with these resources: \n1. https://freecodecamp.org \n2. https://w3schools.com`,
+        sender: "bot",
+      };
+    } else if (lowerCaseMessage.startsWith("what is python")) {
+      return {
+        text: `Python is a high-level, interpreted programming language. It's great for data analysis, web development, and more. Learn more at https://www.python.org`,
+        sender: "bot",
+      };
+    } else if (lowerCaseMessage.startsWith("learn machine learning")) {
+      return {
+        text: `You can start learning Machine Learning with these resources: \n1. https://www.coursera.org/learn/machine-learning \n2. https://www.kaggle.com/learn/intro-to-machine-learning`,
+        sender: "bot",
+      };
+    } else {
+      return {
+        text: generateSearchLink(userMessage),
+        sender: "bot",
+      };
+    }
+  };
+
+  const handleSend = (e) => {
+    e.preventDefault();
+    if (!input.trim()) return;
+    const newMessage = { text: input, sender: "user" };
+    setMessages([...messages, newMessage]);
+    setInput("");
+
+    setTimeout(() => {
+      const botResponse = mockApiResponse(input);
+      setMessages((prevMessages) => [...prevMessages, botResponse]);
+    }, 1000);
+  };
+
   useEffect(() => {
     if (isOpen) {
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -80,6 +133,7 @@ const ChatBot = () => {
               <div ref={messagesEndRef} />
             </div>
             <form
+              onSubmit={handleSend}
               className="p-2 border-t border-gray-200 flex"
             >
               <input
